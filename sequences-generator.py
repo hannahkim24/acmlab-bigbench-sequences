@@ -33,7 +33,7 @@ def find_times():
     time_2 = str(randrange(10, 12))
 
     if time_2 == "12":
-        time_2 = "12 pm"
+        time_2 = "12pm"
     else:
         time_2 = time_2 + "am"
     time_3 = str(randrange(1, 4)) + "pm"
