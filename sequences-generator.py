@@ -38,6 +38,12 @@ for i in range(200):
     N = random.randint(2, 6) + 1
     times = random.sample(range(24), N)
     times.sort()
+    for i in range(len(times)):
+        time = times[i]
+        if time < 12:
+            times[i] = str(time) + "am"
+        else:
+            times[i] = str(time - 12) + "pm"
 
 
     answer_interval = random.randint(0, N-2)
@@ -67,3 +73,5 @@ for i in range(200):
 
     print("The", target_loc, "was closed after", str(times[N-1]) + ".\" , ")
     print("\"target\": \""+ str(answer) + "\" }, ")
+
+
