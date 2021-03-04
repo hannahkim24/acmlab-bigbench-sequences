@@ -1,3 +1,4 @@
+import random
 from random import randrange
 
 person_list = ['John', 'Michael', 'Mary', 'Jennifer', 'Linda', 'Elizabeth', 'William',
@@ -19,108 +20,50 @@ predicate_list = ['stretching at a yoga studio', 'buying cookies at a bakery', '
                   'waiting at the airport', 'waiting at the train station',
                   'buying clothes at the mall', 'fixing their computer at the electronic store',
                   'buying a bike at the bike shop']
-num_questions = 0
 
-def rand_options(input_list):
-    a = input_list[randrange(len(input_list))]
-    b = input_list[randrange(len(input_list))]
-    c = input_list[randrange(len(input_list))]
-    return a, b, c
+for i in range(200):
+    target_person = person_list[randrange(len(person_list))]
+    target_loc = location_list[randrange(len(location_list))]
 
-
-def find_times():
-    time_1 = str(randrange(5, 9)) + "am"
-    time_2 = str(randrange(10, 12))
-
-    if time_2 == "12":
-        time_2 = "12pm"
-    else:
-        time_2 = time_2 + "am"
-    time_3 = str(randrange(1, 4)) + "pm"
-    time_4 = str(randrange(5, 8)) + "pm"
-    time_5 = str(randrange(9, 11)) + "pm"
-    return time_1, time_2, time_3, time_4, time_5
+    location_choices = []
+    predicate_choices = []
+    person_choices = []
 
 
-for num in range(200):
-    # target is in range of time_1 and time_2
-    for i in range(1):
-        target_loc = location_list[randrange(len(location_list))]
+    def get_random_description(time, count):
+        begin, end = time
+        return person_choices[count] + " saw " + target_person + " " + predicate_choices[count] + " from " + str(begin) + " to " + str(end) + "."
 
-        loc_1, loc_2, loc_3 = rand_options(location_list)
-        predicate_1, predicate_2, predicate_3 = rand_options(predicate_list)
-        person_1, person_2, person_3 = rand_options(person_list)
 
-        time_1, time_2, time_3, time_4, time_5 = find_times()
+    N = random.randint(2, 6) + 1
+    times = random.sample(range(24), N)
+    times.sort()
 
-        # print scenarios
-        print("{\"input\":  \"query: When did", person_1, "go to the", target_loc + "?", "knowledge:",
-              person_1, "wakes up at", time_1 + ".", person_1, "stayed at the", loc_1, "from", time_4, "to",
-              time_5 + ".",
-              person_2, "saw", person_1, predicate_1, "from", time_2, "to", time_3 + ".",
-              person_3, "saw", person_1, predicate_2, "from", time_3, "to", time_4 + ".",
-              "The", target_loc, "was closed after", time_5 + ".\" , ")
-        print("\"target\": \"", time_1, "-", time_2 + "\" }, ")
-        num_questions += 1
 
-    # target is in range of time_2 and time_3
-    for i in range(1):
-        target_loc = location_list[randrange(len(location_list))]
+    answer_interval = random.randint(0, N-2)
+    answer = ""
+    times_to_descriptions = {}
 
-        loc_1, loc_2, loc_3 = rand_options(location_list)
-        predicate_1, predicate_2, predicate_3 = rand_options(predicate_list)
-        person_1, person_2, person_3 = rand_options(person_list)
 
-        time_1, time_2, time_3, time_4, time_5 = find_times()
 
-        # print scenarios
-        print("{\"input\":  \"query: When did", person_1, "go to the", target_loc + "?", "knowledge:",
-              person_1, "wakes up at", time_1 + ".", person_1, "stayed at the", loc_1, "from", time_4, "to",
-              time_5 + ".",
-              person_2, "saw", person_1, predicate_1, "from", time_1, "to", time_2 + ".",
-              person_3, "saw", person_1, predicate_2, "from", time_3, "to", time_4 + ".",
-              "The", target_loc, "was closed after", time_5 + ".\" , ")
-        print("\"target\": \"", time_2, "-", time_3 + "\" }, ")
-        num_questions += 1
+    for i in range(N-1):
+        location_choices.append(location_list[randrange(len(location_list))])
+        predicate_choices.append(predicate_list[randrange(len(predicate_list))])
+        person_choices.append(person_list[randrange(len(person_list))])
 
-        # target is in range of time_3 and time_4
-    for i in range(1):
-        target_loc = location_list[randrange(len(location_list))]
 
-        loc_1, loc_2, loc_3 = rand_options(location_list)
-        predicate_1, predicate_2, predicate_3 = rand_options(predicate_list)
-        person_1, person_2, person_3 = rand_options(person_list)
+    count = 0
+    print("{\"input\": \"query: When did", target_person, "go to the", target_loc + "?", "knowledge:")
+    print(target_person + " wakes up at "+ str(times[0]) + ".")
+    for i in range(N-1):
+        begin, end = times[i], times[i+1]
+        if i == answer_interval:
+            answer = str(begin) + "-" + str(end)
+        else:
+            #times_to_descriptions[(begin, end)] = get_random_description((begin,end), count)
+            print(get_random_description((begin, end), count))
+        count+=1
 
-        time_1, time_2, time_3, time_4, time_5 = find_times()
 
-        # print scenarios
-        print("{\"input\":  \"query: When did", person_1, "go to the", target_loc + "?", "knowledge:",
-              person_1, "wakes up at", time_1 + ".", person_1, "stayed at the", loc_1, "from", time_4, "to",
-              time_5 + ".",
-              person_2, "saw", person_1, predicate_1, "from", time_2, "to", time_3 + ".",
-              person_3, "saw", person_1, predicate_2, "from", time_1, "to", time_2 + ".",
-              "The", target_loc, "was closed after", time_5 + ".\" , ")
-        print("\"target\": \"", time_3, "-", time_4 + "\" }, ")
-        num_questions += 1
-
-    # target is in range of time_4 and time_5
-    for i in range(1):
-        target_loc = location_list[randrange(len(location_list))]
-
-        loc_1, loc_2, loc_3 = rand_options(location_list)
-        predicate_1, predicate_2, predicate_3 = rand_options(predicate_list)
-        person_1, person_2, person_3 = rand_options(person_list)
-
-        time_1, time_2, time_3, time_4, time_5 = find_times()
-
-        # print scenarios
-        print("{\"input\":  \"query: When did", person_1, "go to the", target_loc + "?", "knowledge:",
-              person_1, "wakes up at", time_1 + ".", person_1, "stayed at the", loc_1, "from", time_3, "to",
-              time_4 + ".",
-              person_2, "saw", person_1, predicate_1, "from", time_2, "to", time_3 + ".",
-              person_3, "saw", person_1, predicate_2, "from", time_1, "to", time_2 + ".",
-              "The", target_loc, "was closed after", time_5 + ".\" , ")
-        print("\"target\": \"", time_4, "-", time_5 + "\" }, ")
-        num_questions += 1
-
-print("Number of questions:", num_questions)
+    print("The", target_loc, "was closed after", str(times[N-1]) + ".\" , ")
+    print("\"target\": \""+ str(answer) + "\" }, ")
