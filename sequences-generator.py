@@ -21,57 +21,59 @@ predicate_list = ['stretching at a yoga studio', 'buying cookies at a bakery', '
                   'buying clothes at the mall', 'fixing their computer at the electronic store',
                   'buying a bike at the bike shop']
 
-for i in range(200):
-    target_person = person_list[randrange(len(person_list))]
-    target_loc = location_list[randrange(len(location_list))]
 
-    location_choices = []
-    predicate_choices = []
-    person_choices = []
+def get_random_description(time, count, person_choices, target_person, predicate_choices):
+    # generate constraint statement with given beginning and end times and new predicates and characters
+    begin, end = time
+    return person_choices[count] + " saw " + target_person + " " + predicate_choices[count] + " from " + str(
+        begin) + " to " + str(end) + "."
 
+def main():
+    for i in range(200):
+        target_person = person_list[randrange(len(person_list))]
+        target_loc = location_list[randrange(len(location_list))]
 
-    def get_random_description(time, count):
-        begin, end = time
-        return person_choices[count] + " saw " + target_person + " " + predicate_choices[count] + " from " + str(begin) + " to " + str(end) + "."
+        location_choices = []
+        predicate_choices = []
+        person_choices = []
 
-
-    N = random.randint(2, 6) + 1
-    times = random.sample(range(24), N)
-    times.sort()
-    for i in range(len(times)):
-        time = times[i]
-        if time < 12:
-            times[i] = str(time) + "am"
-        else:
-            times[i] = str(time - 12) + "pm"
-
-
-    answer_interval = random.randint(0, N-2)
-    answer = ""
-    times_to_descriptions = {}
-
-
-
-    for i in range(N-1):
-        location_choices.append(location_list[randrange(len(location_list))])
-        predicate_choices.append(predicate_list[randrange(len(predicate_list))])
-        person_choices.append(person_list[randrange(len(person_list))])
+        N = random.randint(2, 6) + 1
+        times = random.sample(range(24), N) # remove duplicates
+        times.sort()
+        
+        for i in range(len(times)): # change to am and pm times
+            time = times[i]
+            if time < 12:
+                times[i] = str(time) + "am"
+            elif time == 12:
+                times[i] = str(time) + "pm"
+            else:
+                times[i] = str(time - 12) + "pm"
 
 
-    count = 0
-    print("{\"input\": \"query: When did", target_person, "go to the", target_loc + "?", "knowledge:")
-    print(target_person + " wakes up at "+ str(times[0]) + ".")
-    for i in range(N-1):
-        begin, end = times[i], times[i+1]
-        if i == answer_interval:
-            answer = str(begin) + "-" + str(end)
-        else:
-            #times_to_descriptions[(begin, end)] = get_random_description((begin,end), count)
-            print(get_random_description((begin, end), count))
-        count+=1
+        answer_interval = random.randint(0, N-2)
+        answer = ""
+
+        for i in range(N-1): # choose random locations, predicates, and characters
+            location_choices.append(location_list[randrange(len(location_list))])
+            predicate_choices.append(predicate_list[randrange(len(predicate_list))])
+            person_choices.append(person_list[randrange(len(person_list))])
+
+        count = 0
+        print("{\"input\": \"query: When did", target_person, "go to the", target_loc + "?", "knowledge:")
+        print(target_person + " wakes up at "+ str(times[0]) + ".")
+        for i in range(N-1):
+            begin, end = times[i], times[i+1]
+            if i == answer_interval:
+                answer = str(begin) + "-" + str(end)
+            else:
+                #times_to_descriptions[(begin, end)] = get_random_description((begin,end), count)
+                print(get_random_description((begin, end), count, person_choices, target_person, predicate_choices))
+            count+=1
 
 
-    print("The", target_loc, "was closed after", str(times[N-1]) + ".\" , ")
-    print("\"target\": \""+ str(answer) + "\" }, ")
+        print("The", target_loc, "was closed after", str(times[N-1]) + ".\" , ")
+        print("\"target\": \""+ str(answer) + "\" }, ")
 
-
+if __name__ == "__main__":
+    main()
